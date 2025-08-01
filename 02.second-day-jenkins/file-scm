@@ -1,0 +1,61 @@
+Thanks for sharing the screenshot — you're configuring your Jenkins pipeline using **Pipeline script from SCM (Source Control Management)**. Here's a detailed explanation of each section:
+
+---
+
+### ✅ **What You’re Doing:**
+
+You are telling Jenkins to:
+
+* **Pull the pipeline definition (`Jenkinsfile`) directly from a GitHub repository**
+* Use the `main` branch
+* Use the file named `Jenkinsfile` at the root of the repo
+
+---
+
+### 🔍 **Breakdown of the Fields:**
+
+| Field                    | Value                                     | Explanation                                                                                                                      |
+| ------------------------ | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| **SCM**                  | Git                                       | You’re using Git as the version control system.                                                                                  |
+| **Repository URL**       | `http://github.com/RKVankini/jenkins.git` | Jenkins will pull your pipeline from this repo. 🔺 **Note:** `http` should ideally be `https` for security.                      |
+| **Credentials**          | `- none -`                                | You selected no credentials. Since the repo is public, this is fine. For private repos, you need to set GitHub credentials here. |
+| **Branches to build**    | `*/main`                                  | Jenkins will look for the branch named `main`. The `*/` prefix refers to `origin/main`.                                          |
+| **Script Path**          | `Jenkinsfile`                             | Jenkins will look for a file named `Jenkinsfile` at the **root** of your GitHub repo.                                            |
+| **Lightweight checkout** | ✅ Enabled                                 | Jenkins fetches just the `Jenkinsfile` without cloning the full repo (faster, used in simple cases).                             |
+
+---
+
+### ✅ Best Practices & Tips:
+
+1. **Use HTTPS Instead of HTTP**
+   Change the repository URL to:
+
+   ```
+   https://github.com/RKVankini/jenkins.git
+   ```
+
+   This is more secure and avoids warnings.
+
+2. **Private Repo?**
+   If the repo is private, you’ll need to:
+
+   * Add a GitHub personal access token in **Jenkins > Credentials**
+   * Choose that credential from the **Credentials** dropdown
+
+3. **Subdirectory Jenkinsfile?**
+   If your `Jenkinsfile` is inside a folder (e.g., `ci/Jenkinsfile`), set:
+
+   ```plaintext
+   Script Path: ci/Jenkinsfile
+   ```
+
+4. **Want to build on every push?**
+   Set up a **webhook** in GitHub to notify Jenkins on code changes.
+
+---
+
+Let me know if:
+
+* You want help setting up GitHub credentials
+* You’re using a `Jenkinsfile` in a subfolder
+* You want to trigger the pipeline on push automatically
