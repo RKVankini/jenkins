@@ -8,6 +8,6 @@ resource "aws_instance" "name" {
     instance_type = "t2.micro"
     key_name = "RKV"
     tags = {
-      Name = "through jenkins"
+      Name = "through-jenkins-1"
     }
 }
