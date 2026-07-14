@@ -1,0 +1,477 @@
+jenkin file declarative script with maven pipeline :
+--------------------------------------------------------------------------
+
+pipeline {
+    agent any
+
+    stages {
+        stage('stage-1') {
+            steps {
+               git branch: 'main', credentialsId: 'terraform', url: 'https://github.com/nareshdevopscloud/project-maven-jenkins-CI-CD.git'
+            }
+        }
+   
+        stage('clean') {
+            steps {
+              sh  'mvn clean'
+            }
+        }
+        
+        stage('test') {
+            steps {
+              sh  'mvn test'
+            }
+        }
+        stage('install') {
+            steps {
+               sh  'mvn install'
+            }
+        }
+        
+        stage('deployment') {
+            steps {
+                
+              deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://18.246.218.60:8080/')], contextPath: null, war: 'webapp/target/*.war'
+
+            }
+        }
+        
+    }
+}
+jenkins file groovy script with maven project1:
+-----------------------------------------------------------------------------------
+node {
+    stage('stage1') { 
+         git branch: 'main', credentialsId: 'terraform', url: 'https://github.com/nareshdevopscloud/project-maven-jenkins-CI-CD.git'
+    }
+    stage('clean') {
+        sh "mvn clean"
+        
+        }
+    stage('test') {
+        sh "mvn test"
+        
+        }
+    stage('install') {
+        sh "mvn install"
+        
+        }
+    stage('deployement') {
+        deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://18.246.218.60:8080/')], contextPath: null, war: 'webapp/target/*.war'
+
+        
+        }
+}
+
+
+
+
+jenkins pipeline declarative script  with maven project2:
+-------------------------------------------------------------------------------------
+pipeline {
+    agent any
+
+    stages {
+        stage('stage-1') {
+            steps {
+                git branch: 'main', credentialsId: 'aws', url: 'https://github.com/medasravanthi/project-2-maven-jenkins-CICD.git'
+            }
+        }
+   
+        stage('clean') {
+            steps {
+              sh  'mvn clean'
+            }
+        }
+        
+        stage('test') {
+            steps {
+              sh  'mvn test'
+            }
+        }
+        stage('install') {
+            steps {
+               sh  'mvn install'
+            }
+        }
+        
+        stage('deployment') {
+            steps {
+                
+               deploy adapters: [tomcat8(credentialsId: 'tomcat8', path: '', url: 'http://34.222.65.18:8080/')], contextPath: null, war: '**/*.war'
+
+            }
+        }
+        
+    }
+}
+
+
+jenkins file with  Terraform rds declarative script with destroy :
+----------------------------------------------------------------
+
+pipeline {
+    agent any
+
+    stages {
+        stage('checkout') {
+            steps {
+                git branch: 'main', credentialsId: 'aws', url: 'https://github.com/medasravanthi/rdswithterrajen.git'
+            }
+        }
+        stage('init') {
+            steps {
+                sh "terraform init -reconfigure"
+            }
+        }
+        stage('plan') {
+            steps {
+                sh "terraform plan"
+            }
+        }
+        stage('action') {
+            steps {
+                sh "terraform ${action} --auto-approve"
+            }
+        }
+    }
+}
+
+jenkins file with  terraform rds groovy script with apply :
+-------------------------------------------------
+node {
+    stage('stage1') { 
+        git branch: 'main', credentialsId: 'aws', url: 'https://github.com/medasravanthi/rdswithterrajen.git'
+    }
+    stage('init') {
+        sh "terraform init -reconfigure"
+        
+        }
+    stage('action') {
+        sh "terraform ${action} --auto-approve"
+        
+        }
+}
+
+jenkins file with terraform ec2 declarative script :
+--------------------------------------------------
+
+pipeline {
+    agent any
+
+    stages {
+        stage('checkout') {
+            steps {
+                git branch: 'main', credentialsId: 'aws', url: 'https://github.com/medasravanthi/terraform-jenkins.git'
+            }
+        }
+        stage('init') {
+            steps {
+                sh "terraform init -reconfigure"
+            }
+        }
+        stage('plan') {
+            steps {
+                sh "terraform plan"
+            }
+        }
+        stage('action') {
+            steps {
+                sh "terraform ${action} --auto-approve"
+            }
+        }
+    }
+}
+
+jfrog declarative script using jenkins:
+-------------------------------------------------------
+pipeline {
+    agent any
+
+    stages {
+        stage('stage-1') {
+            steps {
+                git branch: 'main', credentialsId: 'terraform', url: 'https://github.com/nareshdevopscloud/project-maven-jenkins-CI-CD.git'
+            }
+        }
+   
+        stage('clean') {
+            steps {
+              sh  'mvn clean'
+            }
+        }
+        
+        stage('test') {
+            steps {
+              sh  'mvn test'
+            }
+        }
+        stage('install') {
+            steps {
+               sh  'mvn install'
+            }
+        }
+        
+        stage('Push artifacts into artifactory') {
+            steps {
+              rtUpload (
+                serverId: 'jfrog-admin',
+                spec: '''{
+                      "files": [
+                        {
+                          "pattern": "*.war",
+                           "target": "dev/"
+                        }
+                    ]
+                }'''
+              )
+          }
+        }
+        
+        stage('deployment') {
+            steps {
+                
+             deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://54.244.59.51:8080/')], contextPath: null, war: 'webapp/target/*.war'
+
+            }
+        }
+        
+        
+    }
+}
+creating ec2 declarative script with lambda using jenkins:
+--------------------------------------------------------
+pipeline {
+    agent any
+
+    stages {
+        stage('checkout') {
+            steps {
+                git branch: 'main', credentialsId: 'aws', url: 'https://github.com/medasravanthi/lamdafunction.git'
+            }
+        }
+        stage('lambda') {
+            steps {
+                sh'python lambda.py'
+            }
+        }
+        
+    
+    stage('deploy') {
+            steps {
+                sh'python test.py'
+            }
+        }
+        
+    }
+}
+creating ec2 declarative script with boto3 using jenkins:
+------------------------------------------------------------
+pipeline {
+    agent any
+
+    stages {
+        stage('checkout') {
+            steps {
+                git branch: 'main', credentialsId: 'aws', url: 'https://github.com/medasravanthi/lamdafunction.git'
+            }
+        }
+        stage('deploy') {
+            steps {
+                sh'python test.py'
+            }
+        }
+        
+    
+    stage('ec2') {
+            steps {
+                sh'python lambda.py'
+            }
+        }
+        
+    }
+}
+
+creating s3 declarative script with lambda using jenkins:
+-----------------------------------------------------------
+pipeline {
+    agent any
+
+    stages {
+        stage('checkout') {
+            steps {
+                git branch: 'main', credentialsId: 'aws', url: 'https://github.com/medasravanthi/s3.pythonboto3.git'
+                
+            }
+        }
+        
+        stage('lambda') {
+            steps {
+                sh 'python bus3.py'
+                
+            }
+        }
+    }
+}
+
+
+
+jenkin file declarative script  with docker image pushing to ECR registry:
+-------------------------------------------------------------------------------------
+ pipeline {
+    agent any
+
+    stages {
+        stage('clone') {
+            steps {
+                git branch: 'main', credentialsId: 'aws', url: 'https://github.com/nareshdevopscloud/jenkins-dockerbuild.git'
+            }
+        }
+        stage('build') {
+            steps {
+                sh 'docker build -t srdocker .'
+            }
+        }
+         
+        stage('ecr') {
+            steps {
+                sh '''
+                aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 660836083694.dkr.ecr.us-west-2.amazonaws.com
+                docker tag srdocker:latest 660836083694.dkr.ecr.us-west-2.amazonaws.com/srdocker:latest
+                docker push 660836083694.dkr.ecr.us-west-2.amazonaws.com/srdocker:latest
+                '''
+            }
+        }
+       
+        stage('email') {
+            steps {
+                emailext body: 'email send to notification', subject: 'email.text', to: 'sravanthimeda7@gmail.com'
+            }
+        }
+
+
+        
+jenkin file with configure email notifications :
+--------------------------------------------------------------------------------
+pipeline {
+    agent any
+
+    stages {
+        stage('clone') {
+            steps {
+                git branch: 'main', credentialsId: 'aws', url: 'https://github.com/nareshdevopscloud/jenkins-dockerbuild.git'
+            }
+        }
+        stage('build') {
+            steps {
+                sh 'docker build -t srdocker .'
+            }
+        }
+        
+
+         
+        stage('ecr') {
+            steps {
+                sh '''
+                aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 660836083694.dkr.ecr.us-west-2.amazonaws.com
+                docker tag srdocker:latest 660836083694.dkr.ecr.us-west-2.amazonaws.com/srdocker:latest
+                docker push 660836083694.dkr.ecr.us-west-2.amazonaws.com/srdocker:latest
+                '''
+            }
+        }
+       
+        stage('email') {
+            steps {
+                emailext body: 'email send to notification', subject: 'email.text', to: 'sravanthimeda7@gmail.com'
+            }
+        }
+        
+       
+    }
+}
+
+
+jenkin file with configure trivy scanner  :
+--------------------------------------------------------------------------------
+
+pipeline {
+    agent any
+
+    stages {
+        stage('clone') {
+            steps {
+                git branch: 'main', credentialsId: 'aws', url: 'https://github.com/nareshdevopscloud/jenkins-dockerbuild.git'
+            }
+        }
+        stage('build') {
+            steps {
+                sh 'docker build -t srdocker .'
+            }
+        }
+        staeg ('image scan') {
+            steps {
+                sh 'trivy image srdocker'
+            }
+        }
+
+         
+        stage('ecr') {
+            steps {
+                sh '''
+                aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 660836083694.dkr.ecr.us-west-2.amazonaws.com
+                docker tag srdocker:latest 660836083694.dkr.ecr.us-west-2.amazonaws.com/srdocker:latest
+                docker push 660836083694.dkr.ecr.us-west-2.amazonaws.com/srdocker:latest
+                '''
+            }
+        }
+       
+        stage('email') {
+            steps {
+                emailext body: 'email send to notification', subject: 'email.text', to: 'sravanthimeda7@gmail.com'
+            }
+        }
+        
+       
+    }
+}
+
+
+--------------------Jenkins with kubernetes(EKS) --------------------------------
+-------------------------------------------------------------------------
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('checkout') {
+            steps {
+                git branch: 'main', credentialsId: 'terraform', url: 'https://github.com/nareshdevopscloud/jenkins-dockerbuild.git'
+                
+            }
+        }
+   
+        stage('build') {
+            steps {
+              sh  'docker build -t sr .'
+            }
+        }
+        
+        stage('ecr') {
+            steps {
+              sh  '''
+                 aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 590183884787.dkr.ecr.us-west-2.amazonaws.com
+                 docker tag sr:latest 590183884787.dkr.ecr.us-west-2.amazonaws.com/sr:latest
+                 docker push 590183884787.dkr.ecr.us-west-2.amazonaws.com/sr:latest
+                 '''
+            }
+        }
+         stage('deploy') {
+            steps {
+               sh  'aws eks  update-kubeconfig --name eks-cluster --region us-west-2'
+               sh  'kubectl apply -f deploy-service.yaml'
+            }
+        }
+        
+    }
+}
